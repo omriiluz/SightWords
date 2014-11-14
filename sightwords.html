@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<script>
+		var wordList=[];
+		var undoList=[];
+		var wordIndex=0;
+		var timer_acc=0;
+		var start;
+			function running(){
+				return !(wordList.length==0 && undoList.length==0) ;
+			}
+			function changeWord(index){
+				wordIndex= index || Math.floor(Math.random() * wordList.length);
+				document.getElementById('word').innerText=wordList[wordIndex];
+				document.getElementById('msg').innerText=(wordList.length).toString()+' more words to go!';
+			}
+
+			function action(op){
+				if (!running()) return;
+				if (op=='yes'){
+					undoList.push(wordList[wordIndex]);
+					wordList.splice(wordIndex,1);
+				}
+				if (wordList.length==0){
+					document.getElementById('word').innerText='Good Job, keep going!';
+					document.getElementById('msg').innerText='no more words!';
+				} else {
+					changeWord();
+				}
+			}
+
+			function undo(){
+				if (undoList.length>0){
+					wordList.push(undoList.pop());
+					changeWord(wordList.length-1);
+				}
+
+			}
+
+			function timerTick(){
+				if (wordList.length==0 || document.hidden) return;
+				document.getElementById('timer').innerText=timer_acc+Math.round(((new Date())-start)/1000);
+				setTimeout(timerTick,250);
+			}
+
+			function reset(){
+				document.getElementById('config').style.display='block';
+				document.getElementById('game').style.display='none';
+			}
+
+			function init(){
+				var wordListAll = [[
+						"the",
+					    "to",
+					    "and",
+					    "he",
+					    "a",
+					    "i",
+					    "you",
+					    "it",
+					    "of",
+					    "in",
+					    "was",
+					    "said",
+					    "his",
+					    "that",
+					    "she",
+					    "for",
+					    "on",
+					    "they", 
+					    "but", 
+					    "had", 
+					    "at", 
+					    "him", 
+					    "with", 
+					    "up", 
+					    "all"],
+					    ["look",
+					    "is",
+					    "her",
+					    "there",
+					    "some",
+					    "out",
+					    "as",
+					    "be",
+					    "have",
+					    "go",
+					    "we",
+					    "am",
+					    "then",
+					    "little", 
+					    "down", 
+					    "do", 
+					    "can", 
+					    "could", 
+					    "when", 
+					    "did", 
+					    "what", 
+					    "so", 
+					    "see", 
+					    "not", 
+					    "were"],
+					    ["get",
+					    "them",
+					    "like",
+					    "one",
+					    "this",
+					    "my",
+					    "would",
+					    "me",
+					    "will",
+					    "yes",
+					    "big",
+					    "went",
+					    "are",
+					    "come", 
+					    "if", 
+					    "now", 
+					    "long", 
+					    "no", 
+					    "came", 
+					    "ask", 
+					    "very", 
+					    "an", 
+					    "over", 
+					    "your", 
+					    "its"],
+						["ride",
+					    "into",
+					    "just",
+					    "blue",
+					    "red",
+					    "from",
+					    "good",
+					    "any",
+					    "about",
+					    "around",
+					    "want",
+					    "don't",
+					    "how",
+					    "know",
+					    "right",
+					    "put",
+					    "too",
+					    "got",
+					    "take",
+					    "where",
+					    "every",
+					    "pretty",
+					    "jump",
+					    "green",
+					    "four"],
+					    ["away",
+					    "old",
+					    "by",
+					    "their",
+					    "here",
+					    "saw",
+					    "call",
+					    "after",
+					    "well",
+					    "think",
+					    "ran",
+					    "let",
+					    "help",
+					    "make",
+					    "going",
+					    "sleep",
+					    "brown",
+					    "yellow",
+					    "five",
+					    "six",
+					    "walk",
+					    "two",
+					    "or",
+					    "before",
+					    "eat"],
+					    ["again",
+					    "play",
+					    "who",
+					    "been",
+					    "may",
+					    "stop",
+					    "off",
+					    "never",
+					    "seven",
+					    "eight",
+					    "cold",
+					    "today",
+					    "fly",
+					    "myself",
+					    "round",
+					    "tell",
+					    "much",
+					    "keep",
+					    "give",
+					    "work",
+					    "first",
+					    "try",
+					    "new",
+					    "must",
+					    "start"]];
+				undoList= [];
+				wordList= [];
+				for (var i=1; i<=6; i++){
+					if (document.getElementById('cbList'+i.toString()).checked){
+						for (var j=0; j<25; j++) wordList.push(wordListAll[i-1][j]);
+					}
+				}
+				var noOfWords=parseInt(document.getElementById('tbWords').value);
+				while (wordList.length > noOfWords) wordList.splice(Math.floor(Math.random() * wordList.length),1);
+
+				document.addEventListener('visibilitychange', function(event) {
+				  if (!document.hidden) {
+				    	if (!running()) return;
+						start = new Date();
+						timerTick();
+				  } else {
+				   if (!running()) return;
+					timer_acc+=Math.round(((new Date())-start)/1000)
+					start = new Date();
+				  }
+				});
+				document.getElementById('reset').innerText='Restart';
+				start = new Date();
+				timer_acc=0;
+				timerTick();
+				changeWord();
+				document.getElementById('config').style.display='none';
+				document.getElementById('game').style.display='block';
+			}
+
+        </script>
+		<style>
+			#header {
+			    background-color:black;
+			    font-size: large;
+			    color:white;
+			    text-align:center;
+			    padding:5px;
+			}
+			#section {
+			    width:100%;
+			    float:left;
+			    padding:10px; 
+			}
+			#action1{
+				width:50%;
+				display: inline-block;
+			    float:left;
+			    color:black;
+			    background-color: green;
+			    text-align:center;
+			    font-size: xx-large;
+			 }
+			#action2 {
+				width:50%;
+				display: inline-block;
+			    float:left;
+			    color:black;
+			    background-color: red;
+			    text-align:center;
+			    font-size: xx-large;
+			 }
+			a {
+				   cursor: hand;
+			}			 
+			#word {
+				width:100%;
+			    float:left;
+			    color:blue;
+			    text-align:center;
+			    font-size: xx-large;
+			 }
+			 #msg {
+				width:100%;
+			    float:left;
+			    color:black;
+			    text-align:center;
+			    font-size: x-large;
+			 }
+
+			 #timer {
+				width:100%;
+			    float:left;
+			    color:black;
+			    text-align:center;
+			    font-size: large;
+			 }
+
+			 #bottom_actions {
+			 	position: absolute; 
+    			bottom: 25px;
+				width:95%;
+			    float:left;
+			    color:black;
+			    text-align:center;
+			    font-size: large;
+			 }
+
+			#action3 {
+				width:50%;
+				display: inline-block;
+			    float:left;
+			    text-align:center;
+			    font-size: large;
+			 }
+			 #action4 {
+				width:50%;
+				display: inline-block;
+			    float:left;
+			    text-align:center;
+			    font-size: large;
+			 }
+
+			 #params {
+				width:100%;
+			    float:left;
+			    color:black;
+			    text-align:center;
+			    font-size: large;
+			 }
+
+		</style>
+	</head>
+	<body>
+		<div id="header">
+		Sight Words
+		</div>
+		<br><br>
+		<div id="game" style="display: none;">
+			<div id="actions">
+				<div id="action1"><a onclick="action('yes');">Yes</a></div>
+				<div id="action2"><a onclick="action('no');">No</a></div>
+			</div>
+			<br><br><br><br><br><br>
+			<div id="word">
+				
+			</div>
+			<br><br><br><br><br><br>
+			<div id="msg">
+				
+			</div>
+			<br><br>
+			<div id="timer">
+				
+			</div>
+			<div id="bottom_actions">
+				<div id="action3"><a id='reset' onclick="reset();">Reset</a></div>
+				<div id="action4"><a onclick="undo();">Undo</a></div>
+			</div>
+		</div>
+		<div id="config" style="display: block;">
+			<div id="params">
+				Setup <br>
+				<input type="checkbox" id="cbList1" value="list1" checked/>List 1<br />
+				<input type="checkbox" id="cbList2" value="list2" checked />List 2<br />
+				<input type="checkbox" id="cbList3" value="list3" checked />List 3<br />
+				<input type="checkbox" id="cbList4" value="list4" />List 4<br />
+				<input type="checkbox" id="cbList5" value="list5" />List 5<br />
+				<input type="checkbox" id="cbList6" value="list6" />List 6<br />
+				How many words ? <input type="range" id="tbWords" min="0" max="150" oninput="opWords.value=value" value=75> <output id=opWords>75</output><br />
+				</div>
+			<div id="bottom_actions">
+				<div id="action3"><a id='reset'onclick="init();">Start</a></div>
+			</div>
+		</div>
+	</body>
+</html>
