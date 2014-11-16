@@ -211,7 +211,10 @@
 				}
 				var noOfWords=parseInt(document.getElementById('tbWords').value);
 				while (wordList.length > noOfWords) wordList.splice(Math.floor(Math.random() * wordList.length),1);
-
+if (wordList.length<=0){
+    alert('Select list!');
+    return;
+}
 				document.addEventListener('visibilitychange', function(event) {
 				  if (!document.hidden) {
 				    	if (!running()) return;
